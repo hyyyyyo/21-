@@ -1,0 +1,127 @@
+-- 구직자 테이블 생성-- 구직자 테이블 생성
+CREATE TABLE JobSeekers (
+    JobSeekerID INT PRIMARY KEY, -- 구직자 ID
+    Name VARCHAR(50) NOT NULL, -- 이름
+    Email VARCHAR(50) NOT NULL, -- 이메일
+    Phone VARCHAR(20), -- 전화번호
+    Education VARCHAR(100), -- 학력
+    Skills TEXT -- 기술
+);
+
+-- 회사 테이블 생성
+CREATE TABLE Companies (
+    CompanyID INT PRIMARY KEY, -- 회사 ID
+    Name VARCHAR(50) NOT NULL, -- 회사명
+    Location VARCHAR(50), -- 위치
+    Industry VARCHAR(50) -- 산업 분야
+);
+
+-- 직무 유형 테이블 생성
+CREATE TABLE JobTypes (
+    JobTypeID INT PRIMARY KEY, -- 직무 유형 ID
+    Type VARCHAR(50) NOT NULL -- 직무 유형
+);
+
+-- 채용공고 테이블 생성
+CREATE TABLE JobListings (
+    JobListingID INT PRIMARY KEY, -- 채용공고 ID
+    CompanyID INT, -- 회사 ID (외래 키)
+    JobTypeID INT, -- 직무 유형 ID (외래 키)
+    Title VARCHAR(50) NOT NULL, -- 직책
+    Description TEXT, -- 직무 설명
+    Requirements TEXT, -- 자격 요건
+    Location VARCHAR(50), -- 근무지
+    PostedDate DATE, -- 게시일
+    FOREIGN KEY (CompanyID) REFERENCES Companies(CompanyID), -- 외래 키 관계 설정
+    FOREIGN KEY (JobTypeID) REFERENCES JobTypes(JobTypeID) -- 외래 키 관계 설정
+);
+
+-- 지원 테이블 생성
+CREATE TABLE Applications (
+    ApplicationID INT PRIMARY KEY, -- 지원 ID
+    JobSeekerID INT, -- 구직자 ID (외래 키)
+    JobListingID INT, -- 채용공고 ID (외래 키)
+    ApplicationDate DATE, -- 지원일
+    Status VARCHAR(20), -- 상태
+    FOREIGN KEY (JobSeekerID) REFERENCES JobSeekers(JobSeekerID), -- 외래 키 관계 설정
+    FOREIGN KEY (JobListingID) REFERENCES JobListings(JobListingID) -- 외래 키 관계 설정
+);
+
+-- 면접 테이블 생성
+CREATE TABLE Interviews (
+    InterviewID INT PRIMARY KEY, -- 면접 ID
+    ApplicationID INT, -- 지원 ID (외래 키)
+    InterviewDate DATE, -- 면접일
+    Interviewer VARCHAR(50), -- 면접관
+    Result VARCHAR(20), -- 결과
+    FOREIGN KEY (ApplicationID) REFERENCES Applications(ApplicationID) -- 외래 키 관계 설정
+);
+
+
+-- 구직자 데이터 입력
+INSERT INTO JobSeekers (JobSeekerID, Name, Email, Phone, Education, Skills)
+VALUES
+(1, '김철수', 'chulsoo@example.com', '010-1234-5678', '컴퓨터공학 학사', 'Python, SQL, Java'),
+(2, '이영희', 'younghee@example.com', '010-8765-4321', '데이터과학 석사', 'R, SQL, 머신러닝'),
+(3, '박민수', 'minsoo@example.com', '010-5555-1234', '경영학 학사', 'Excel, SQL, 프로젝트 관리'),
+(4, '최유리', 'yuri@example.com', '010-5555-4321', '정보기술 학사', 'C++, SQL, 네트워킹'),
+(5, '장미', 'rose@example.com', '010-4444-3210', '사이버보안 석사', 'Python, SQL, 보안 분석');
+
+-- 회사 데이터 입력
+INSERT INTO Companies (CompanyID, Name, Location, Industry)
+VALUES
+(1, '테크코프', '서울', '정보기술'),
+(2, '데이터솔루션즈', '부산', '데이터 분석'),
+(3, '비즈인크', '대구', '경영 컨설팅'),
+(4, '넷시큐어', '광주', '보안'),
+(5, '아이티솔루션즈', '인천', '네트워크 인프라');
+
+-- 직무 유형 데이터 입력
+INSERT INTO JobTypes (JobTypeID, Type)
+VALUES
+(1, '소프트웨어 엔지니어'),
+(2, '데이터 분석가'),
+(3, '프로젝트 매니저'),
+(4, '보안 분석가'),
+(5, '네트워크 엔지니어');
+
+-- 채용공고 데이터 입력
+INSERT INTO JobListings (JobListingID, CompanyID, JobTypeID, Title, Description, Requirements, Location, PostedDate)
+VALUES
+(1, 1, 1, '소프트웨어 엔지니어', '소프트웨어 애플리케이션 개발 및 유지보수.', '컴퓨터공학 학사, 소프트웨어 개발 2년 경력', '서울', '2024-06-01'),
+(2, 2, 2, '데이터 분석가', '복잡한 데이터 세트를 분석하고 해석.', '데이터과학 학사, SQL 및 R 숙련도', '부산', '2024-06-15'),
+(3, 3, 3, '프로젝트 매니저', '프로젝트 개발 관리 및 감독.', '경영학 학사, 프로젝트 관리 3년 경력', '대구', '2024-06-10'),
+(4, 4, 4, '보안 분석가', '네트워크 보안 모니터링 및 보호.', '사이버보안 석사, 네트워크 보안 프로토콜 경험', '광주', '2024-06-20'),
+(5, 5, 5, '네트워크 엔지니어', '네트워크 인프라 설계 및 관리.', '정보기술 학사, C++ 및 네트워킹 경험', '인천', '2024-06-05');
+
+-- 지원 데이터 입력
+INSERT INTO Applications (ApplicationID, JobSeekerID, JobListingID, ApplicationDate, Status)
+VALUES
+(1, 1, 1, '2024-06-20', '진행중'),
+(2, 2, 2, '2024-06-21', '수락됨'),
+(3, 3, 3, '2024-06-22', '진행중'),
+(4, 4, 5, '2024-06-23', '거절됨'),
+(5, 5, 4, '2024-06-24', '진행중'),
+(6, 1, 3, '2024-06-25', '진행중'),
+(7, 2, 1, '2024-06-26', '거절됨'),
+(8, 3, 2, '2024-06-27', '수락됨'),
+(9, 4, 4, '2024-06-28', '수락됨'),
+(10, 5, 5, '2024-06-29', '진행중');
+
+
+-- 특정 구직자가 지원한 모든 채용공고 조회
+SELECT j.Name, l.Title, l.Company, a.ApplicationDate, a.Status
+FROM Applications a
+JOIN JobSeekers j ON a.JobSeekerID = j.JobSeekerID
+JOIN JobListings l ON a.JobListingID = l.JobListingID
+WHERE j.JobSeekerID = 1;
+
+-- 특정 회사의 모든 채용공고 조회
+SELECT l.Title, l.Description, l.Requirements, l.Location, l.PostedDate
+FROM JobListings l
+WHERE l.Company = '테크코프';
+
+-- 특정 기술을 가진 구직자 찾기
+SELECT Name, Email, Phone, Education, Skills
+FROM JobSeekers
+WHERE Skills LIKE '%SQL%';
